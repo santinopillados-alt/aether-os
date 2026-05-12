@@ -1,0 +1,37 @@
+﻿[tool.poetry]
+name = "terminal-agents"
+version = "0.1.0"
+description = "Enterprise-grade autonomous AI agent ecosystem for software development"
+authors = ["Your Team <you@example.com>"]
+readme = "README.md"
+packages = [{include = "terminal_agents"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+typer = "^0.9.0"
+pydantic = "^2.5.0"
+anthropic = "^0.21.0"
+langgraph = "^0.0.21"
+sqlalchemy = "^2.0.0"
+python-dotenv = "^1.0.0"
+structlog = "^23.2.0"
+httpx = "^0.25.0"
+click = "^8.1.0"
+rich = "^13.7.0"
+pyyaml = "^6.0"
+python-ulid = "^2.0.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+pytest-cov = "^4.1.0"
+black = "^23.12.0"
+ruff = "^0.1.8"
+mypy = "^1.7.0"
+
+[tool.poetry.scripts]
+terminal-agents = "terminal_agents.cli:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
