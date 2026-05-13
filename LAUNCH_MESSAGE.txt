@@ -1,0 +1,16 @@
+﻿AETHER v1.0 BETA - YA DISPONIBLE
+
+⚡ Genera apps full-stack con IA en SEGUNDOS
+
+Backend + Frontend + Tests - TODO automático
+
+🔗 GitHub: https://github.com/santinopillados-alt/aether-os
+💻 Prueba: Descarga aether_frontend.html y abre localmente
+
+PRODUCTIVIDAD 100x:
+❌ Antes: Semanas desarrollando
+✅ Ahora: Segundos con AETHER
+
+GRATIS EN BETA - Sin tarjeta de crédito
+
+#AI #Development #Automation #OpenSource

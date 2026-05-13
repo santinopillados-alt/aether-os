@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER - Genera Apps con IA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 60px; 
+            padding-bottom: 20px; 
+            border-bottom: 2px solid #00D4FF;
+        }
+        .logo { 
+            font-size: 2.5em; 
+            color: #00D4FF; 
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { 
+            color: #e0e0e0; 
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: #00D4FF; }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .hero h1 {
+            font-size: 3.5em;
+            color: #00D4FF;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.7);
+        }
+        .hero p {
+            font-size: 1.3em;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        
+        .cta-btn {
+            background: linear-gradient(135deg, #00D4FF, #0099cc);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+        .cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(0, 212, 255, 0.6);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        .feature {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00D4FF;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .feature h3 { color: #00ff88; margin-bottom: 15px; }
+        
+        .dashboard { display: none; }
+        .dashboard.active { display: block; }
+        
+        .form-section {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid #00D4FF;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00D4FF;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: #1a1f3a;
+            border: 1px solid #00D4FF;
+            color: #e0e0e0;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        
+        .user-info {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .user-info p { margin: 10px 0; }
+        .user-info span { color: #00ff88; font-weight: bold; }
+        
+        .status { padding: 10px 20px; border-radius: 5px; margin: 10px 0; }
+        .status.success { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .status.error { background: rgba(255, 0, 0, 0.2); color: #ff6b6b; }
+        .status.loading { background: rgba(0, 212, 255, 0.2); color: #00D4FF; }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <div class="logo">⚡ AETHER</div>
+            <div class="nav-links">
+                <a onclick="showHome()">Inicio</a>
+                <a id="dashboard-link" onclick="showDashboard()" class="hidden">Dashboard</a>
+                <a id="logout-link" onclick="logout()" class="hidden">Logout</a>
+            </div>
+        </div>
+
+        <div id="home">
+            <div class="hero">
+                <h1>⚡ AETHER</h1>
+                <p>Genera apps full-stack con IA en segundos</p>
+                <p style="color: #666; font-size: 1em;">Backend + Frontend + Tests generados automáticamente</p>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>⚡ Instantáneo</h3>
+                    <p>Genera código en segundos, no en días</p>
+                </div>
+                <div class="feature">
+                    <h3>🎯 Completo</h3>
+                    <p>Backend + Frontend + Tests incluidos</p>
+                </div>
+                <div class="feature">
+                    <h3>🚀 Listo</h3>
+                    <p>Código listo para producción</p>
+                </div>
+            </div>
+
+            <div class="form-section" style="max-width: 500px; margin: 60px auto;">
+                <h2 style="color: #00D4FF; margin-bottom: 20px;">Comenzar</h2>
+                <div class="form-group">
+                    <label>Tu email</label>
+                    <input type="email" id="signup-email" placeholder="tu@email.com">
+                </div>
+                <button class="cta-btn" onclick="signup()" style="width: 100%;">Crear cuenta (Gratis)</button>
+                <p style="text-align: center; margin-top: 15px; color: #666; font-size: 0.9em;">
+                    Beta gratuita - Sin tarjeta de crédito
+                </p>
+            </div>
+        </div>
+
+        <div id="dashboard" class="dashboard">
+            <h2 style="color: #00D4FF; margin-bottom: 30px;">Dashboard</h2>
+            
+            <div class="user-info">
+                <p>Hola, <span id="user-email">-</span></p>
+                <p>Apps generadas: <span id="apps-count">0</span>/1 (Tier: <span id="user-tier">Free</span>)</p>
+            </div>
+
+            <div class="form-section">
+                <h3 style="color: #00D4FF; margin-bottom: 20px;">Generar Nueva App</h3>
+                <form onsubmit="generateApp(event)">
+                    <div class="form-group">
+                        <label>Descripción de la app</label>
+                        <textarea id="spec" placeholder="Ej: App de TODO con agregar, eliminar y marcar como completado" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre del proyecto</label>
+                        <input type="text" id="app-name" placeholder="my_awesome_app" required>
+                    </div>
+                    <button type="submit" class="cta-btn" style="width: 100%;">Generar App</button>
+                </form>
+            </div>
+
+            <div id="result" class="hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        const API = "http://localhost:8001";
+        let currentUser = null;
+
+        function showHome() {
+            document.getElementById("home").style.display = "block";
+            document.getElementById("dashboard").classList.remove("active");
+        }
+
+        function showDashboard() {
+            if (!currentUser) return;
+            document.getElementById("home").style.display = "none";
+            document.getElementById("dashboard").classList.add("active");
+            loadUserData();
+        }
+
+        async function signup() {
+            const email = document.getElementById("signup-email").value.trim();
+            if (!email) {
+                alert("Por favor ingresa tu email");
+                return;
+            }
+
+            try {
+                const res = await fetch(\\/auth/signup?email=\\, {
+                    method: "POST"
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem("user", JSON.stringify(currentUser));
+                    document.getElementById("dashboard-link").classList.remove("hidden");
+                    document.getElementById("logout-link").classList.remove("hidden");
+                    showDashboard();
+                    alert("✅ Cuenta creada! Bienvenido a AETHER");
+                } else {
+                    alert("Error: " + (data.detail || "Unknown error"));
+                }
+            } catch (e) {
+                alert("Error de conexión: " + e.message);
+            }
+        }
+
+        async function generateApp(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const spec = document.getElementById("spec").value;
+            const name = document.getElementById("app-name").value;
+            const resultDiv = document.getElementById("result");
+
+            resultDiv.innerHTML = '<div class="status loading">⏳ Generando app...</div>';
+            resultDiv.classList.remove("hidden");
+
+            try {
+                const res = await fetch(\\/generate?spec=\&app_name=\&user_id=\\, {
+                    method: "POST"
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    resultDiv.innerHTML = \
+                        <div class="status success">
+                            ✅ App generada exitosamente!<br>
+                            Archivos: \<br>
+                            Apps restantes: \
+                        </div>
+                    \;
+                    document.getElementById("spec").value = "";
+                    document.getElementById("app-name").value = "";
+                    loadUserData();
+                } else {
+                    resultDiv.innerHTML = \<div class="status error">❌ \</div>\;
+                }
+            } catch (e) {
+                resultDiv.innerHTML = \<div class="status error">❌ Error: \</div>\;
+            }
+        }
+
+        async function loadUserData() {
+            if (!currentUser) return;
+            try {
+                const res = await fetch(\\/user/\\);
+                const data = await res.json();
+                document.getElementById("user-email").textContent = data.email;
+                document.getElementById("apps-count").textContent = data.apps_used;
+                document.getElementById("user-tier").textContent = data.tier;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem("user");
+            document.getElementById("dashboard-link").classList.add("hidden");
+            document.getElementById("logout-link").classList.add("hidden");
+            showHome();
+        }
+
+        const saved = localStorage.getItem("user");
+        if (saved) {
+            currentUser = JSON.parse(saved);
+            document.getElementById("dashboard-link").classList.remove("hidden");
+            document.getElementById("logout-link").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
