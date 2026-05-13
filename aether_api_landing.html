@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER API - AI Code Generation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0e27; color: #e0e0e0; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 60px; }
+        .header h1 { color: #00D4FF; font-size: 3em; margin-bottom: 10px; text-shadow: 0 0 20px #00D4FF; }
+        .header p { color: #888; font-size: 1.2em; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px; }
+        .card { background: rgba(0, 212, 255, 0.1); border: 1px solid #00D4FF; padding: 30px; border-radius: 10px; }
+        .card h3 { color: #00D4FF; margin-bottom: 15px; }
+        .pricing { text-align: center; padding: 40px; background: rgba(0, 212, 255, 0.05); border-radius: 10px; margin-bottom: 40px; }
+        .pricing h2 { color: #00D4FF; margin-bottom: 30px; font-size: 2em; }
+        .price-item { display: inline-block; margin: 0 20px; }
+        .price-item .amount { font-size: 2em; color: #00ff88; font-weight: bold; }
+        .price-item .desc { color: #888; }
+        .cta { text-align: center; }
+        .btn { background: linear-gradient(135deg, #00D4FF, #0099cc); color: white; border: none; padding: 15px 40px; font-size: 1.1em; border-radius: 5px; cursor: pointer; margin: 10px; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px #00D4FF; }
+        .code { background: #1a1f3a; border: 1px solid #00D4FF; padding: 20px; border-radius: 5px; font-family: monospace; margin: 20px 0; overflow-x: auto; }
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 40px 0; }
+        .feature { padding: 20px; text-align: center; }
+        .feature h4 { color: #00D4FF; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ AETHER API</h1>
+            <p>Generate production-ready code with AI</p>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <h4>🚀 Instant Generation</h4>
+                <p>Backend + Frontend + Tests in seconds</p>
+            </div>
+            <div class="feature">
+                <h4>💰 Pay Per Use</h4>
+                <p>Only pay for what you generate</p>
+            </div>
+            <div class="feature">
+                <h4>📦 Production Ready</h4>
+                <p>Full stack code, deployable immediately</p>
+            </div>
+        </div>
+
+        <div class="pricing">
+            <h2>Simple Pricing</h2>
+            <div class="price-item">
+                <div class="amount">.002</div>
+                <div class="desc">per token</div>
+            </div>
+            <div class="price-item">
+                <div class="amount">~</div>
+                <div class="desc">per app</div>
+            </div>
+            <div class="price-item">
+                <div class="amount">50K</div>
+                <div class="desc">free tokens/mo</div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>For Developers</h3>
+                <p>Use our API to generate code in your projects</p>
+                <div class="code">curl -X POST https://api.aether.app/api/generate \
+  -H "Authorization: Bearer sk_..." \
+  -d '{"spec":"TODO app"}'</div>
+                <button class="btn">Get API Key</button>
+            </div>
+
+            <div class="card">
+                <h3>For Agencies</h3>
+                <p>Generate projects for clients 10x faster</p>
+                <p style="margin-top: 20px;">Build full-stack apps in minutes, deliver in hours</p>
+                <button class="btn">Contact Sales</button>
+            </div>
+
+            <div class="card">
+                <h3>For Startups</h3>
+                <p>Prototype and launch faster than ever</p>
+                <p style="margin-top: 20px;">From idea to deployed code in seconds</p>
+                <button class="btn">Start Free</button>
+            </div>
+        </div>
+
+        <div class="cta">
+            <h2 style="color: #00D4FF; margin-bottom: 20px;">Ready to generate?</h2>
+            <button class="btn" onclick="alert('Get API Key: https://dashboard.aether.app')">Get Started</button>
+        </div>
+    </div>
+</body>
+</html>
