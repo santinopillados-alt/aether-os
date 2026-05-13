@@ -1,3 +1,1 @@
-﻿"""Procfile - Para deploying en Railway/Render"""
-
-web: python -m aether_os.saas_subscription
+﻿web: python -m uvicorn aether_os.saas_subscription:app --host 0.0.0.0 --port 
