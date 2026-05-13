@@ -1,0 +1,7 @@
+﻿@app.post("/api/execute")
+async def execute(data: dict):
+    try:
+        results = await dispatcher.execute(data.get("request", ""))
+        return {"success": True, "agents": len(results), "results": results}
+    except Exception as e:
+        return {"success": False, "error": str(e)}

@@ -1,0 +1,269 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Agents Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { font-size: 1.1em; opacity: 0.9; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        @media (max-width: 1024px) { .grid { grid-template-columns: 1fr; } }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card h2 { font-size: 1.5em; margin-bottom: 20px; color: #4fc3f7; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 1em;
+        }
+        input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.6); }
+        textarea { min-height: 100px; font-family: 'Courier New', monospace; resize: vertical; }
+        button {
+            background: linear-gradient(135deg, #4fc3f7 0%, #0288d1 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .agent {
+            background: rgba(79, 195, 247, 0.1);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+        .agent-name { font-weight: bold; font-size: 1.1em; }
+        .agent-role { color: #81d4fa; font-size: 0.9em; }
+        .status-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            background: #90caf9;
+            color: #1565c0;
+        }
+        .output-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+        .output-section h3 { color: #4fc3f7; margin-bottom: 10px; }
+        .code-block {
+            background: #263238;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .files-list { list-style: none; }
+        .files-list li {
+            padding: 8px;
+            background: rgba(129, 212, 250, 0.1);
+            margin-bottom: 5px;
+            border-radius: 4px;
+            border-left: 3px solid #81d4fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Terminal Agents Dashboard</h1>
+            <p class="subtitle">Autonomous AI Agent Ecosystem</p>
+        </header>
+
+        <div class="grid">
+            <div>
+                <div class="card">
+                    <h2>⚡ Execute Task</h2>
+                    
+                    <div class="input-group">
+                        <label>Project Name</label>
+                        <input type="text" id="projectName" placeholder="My Project" value="New Project">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Task Description</label>
+                        <textarea id="taskRequest" placeholder="Describe what you want...">Create a Python script with random numbers</textarea>
+                    </div>
+
+                    <button onclick="executeTask()">🚀 Execute Task</button>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <h2>🤖 Agents</h2>
+                    <div id="agentsList"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h2>📊 Status</h2>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Status:</strong>
+                        <span id="statusBadge" style="background: #90caf9; color: #1565c0; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-left: 10px;">Idle</span>
+                    </div>
+                    <div>
+                        <strong>Project:</strong>
+                        <p id="projectDisplay" style="opacity: 0.8;">-</p>
+                    </div>
+                    <div>
+                        <strong>Request:</strong>
+                        <p id="requestDisplay" style="opacity: 0.8;">-</p>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 20px; max-height: 400px; overflow-y: auto;">
+                    <h2>📈 Results</h2>
+                    <div id="resultsContainer" style="color: #ccc;">
+                        <p style="opacity: 0.6;">Results will appear here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <h2>📁 Files Created</h2>
+            <div id="filesContainer">
+                <p style="opacity: 0.6;">Files will appear here...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        loadAgents();
+        setInterval(refreshStatus, 2000);
+
+        async function loadAgents() {
+            try {
+                const response = await fetch('/api/agents');
+                const agents = await response.json();
+                const agentsList = document.getElementById('agentsList');
+                let html = '';
+                for (let agent of agents) {
+                    html += '<div class="agent"><div class="agent-name">' + agent.name + '</div><div class="agent-role">Role: ' + agent.role + '</div><span class="status-badge">' + agent.state + '</span></div>';
+                }
+                agentsList.innerHTML = html;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function refreshStatus() {
+            try {
+                const response = await fetch('/api/execution');
+                const data = await response.json();
+                updateUI(data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function executeTask() {
+            const request = document.getElementById('taskRequest').value;
+            const project = document.getElementById('projectName').value;
+
+            if (!request.trim()) {
+                alert('Please enter a task');
+                return;
+            }
+
+            try {
+                const url = new URL('/api/execute', window.location.origin);
+                url.searchParams.append('request', request);
+                url.searchParams.append('project', project);
+
+                const response = await fetch(url, {method: 'POST'});
+                const data = await response.json();
+                updateUI(data);
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function updateUI(data) {
+            const statusBadge = document.getElementById('statusBadge');
+            statusBadge.textContent = (data.status || 'idle').toUpperCase();
+            
+            if (data.status === 'completed') {
+                statusBadge.style.background = '#81c784';
+            } else if (data.status === 'running') {
+                statusBadge.style.background = '#ffb74d';
+            } else {
+                statusBadge.style.background = '#90caf9';
+            }
+
+            document.getElementById('projectDisplay').textContent = data.project || '-';
+            document.getElementById('requestDisplay').textContent = data.request || '-';
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (data.results && Object.keys(data.results).length > 0) {
+                let html = '';
+                for (const [agentName, result] of Object.entries(data.results)) {
+                    html += '<div class="output-section"><h3>' + agentName + '</h3><strong>Status:</strong> ' + result.status + '<br>';
+                    if (result.code_generated) {
+                        html += '<strong>Code:</strong><div class="code-block">' + escapeHtml(result.code_generated) + '</div>';
+                    }
+                    if (result.execution_output) {
+                        html += '<strong>Output:</strong><div class="code-block">' + escapeHtml(result.execution_output) + '</div>';
+                    }
+                    html += '</div>';
+                }
+                resultsContainer.innerHTML = html;
+            }
+
+            const filesContainer = document.getElementById('filesContainer');
+            if (data.files_created && data.files_created.length > 0) {
+                let html = '<ul class="files-list">';
+                for (let f of data.files_created) {
+                    html += '<li>✓ ' + f + '</li>';
+                }
+                html += '</ul>';
+                filesContainer.innerHTML = html;
+            }
+        }
+
+        function escapeHtml(text) {
+            const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
+            return String(text).replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>

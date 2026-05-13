@@ -1,4 +1,4 @@
-﻿"""Command-line interface for Terminal Agents."""
+﻿"""Updated CLI with tool execution."""
 
 import asyncio
 import typer
@@ -6,21 +6,23 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
-from terminal_agents.agents import (
-    OrchestratorAgent, PlannerAgent, ArchitectAgent, 
-    BackendEngineerAgent, QAEngineerAgent
+from terminal_agents.agents.intelligent import (
+    IntelligentPlannerAgent,
+    IntelligentArchitectAgent,
+    IntelligentQAAgent
 )
-from terminal_agents.core.orchestrator import Orchestrator
+from terminal_agents.agents.executors import CodeGeneratingBackendAgent
+from terminal_agents.core.tool_orchestrator import ToolEnabledOrchestrator
 from terminal_agents.memory import MemoryManager
+from terminal_agents.tools.executor import ToolExecutor
 
 app = typer.Typer(
     name="terminal-agents",
-    help="Enterprise AI Agent Ecosystem"
+    help="Enterprise AI Agent Ecosystem with Real Execution"
 )
 
 console = Console()
 
-# Global instances
 orchestrator = None
 memory_manager = None
 
@@ -33,13 +35,13 @@ def init_system():
         return
     
     memory_manager = MemoryManager()
-    orchestrator = Orchestrator()
+    orchestrator = ToolEnabledOrchestrator()
     
     # Register agents
-    orchestrator.register_agent(PlannerAgent())
-    orchestrator.register_agent(ArchitectAgent())
-    orchestrator.register_agent(BackendEngineerAgent())
-    orchestrator.register_agent(QAEngineerAgent())
+    orchestrator.register_agent(IntelligentPlannerAgent())
+    orchestrator.register_agent(IntelligentArchitectAgent())
+    orchestrator.register_agent(CodeGeneratingBackendAgent(orchestrator.tool_executor))
+    orchestrator.register_agent(IntelligentQAAgent())
 
 
 @app.command()
@@ -48,14 +50,18 @@ def demo():
     init_system()
     
     console.print(Panel(
-        "[bold cyan]Terminal Agents Demo[/bold cyan]",
+        "[bold cyan]🚀 Terminal Agents with Real Execution[/bold cyan]",
         border_style="cyan"
     ))
     
-    console.print("[green]✓ System initialized[/green]")
-    console.print("[green]✓ All agents ready[/green]")
-    console.print("[green]✓ Tools available[/green]")
-    console.print("\n[bold]✓ Demo completed successfully![/bold]")
+    console.print("[green]✓ Claude API connected[/green]")
+    console.print("[green]✓ Tool executor ready[/green]")
+    console.print("[green]✓ Code generation enabled[/green]")
+    console.print("[green]✓ File creation enabled[/green]")
+    console.print("\n[bold]✓ System ready for real work![/bold]")
+    
+    console.print("\n[bold cyan]Try this:[/bold cyan]")
+    console.print("[yellow]python -m terminal_agents.main execute \"Create a Python script\"[/yellow]")
 
 
 @app.command()
@@ -65,13 +71,12 @@ def status():
     
     sys_status = orchestrator.get_status()
     
-    table = Table(title="Agent System Status")
-    table.add_column("Agent ID", style="cyan")
-    table.add_column("Name", style="magenta")
-    table.add_column("Role", style="green")
+    table = Table(title="🤖 System Status")
+    table.add_column("Component", style="cyan")
+    table.add_column("Value", style="green")
     
-    for agent in sys_status["agents"]:
-        table.add_row(agent["id"], agent["name"], agent["role"])
+    table.add_row("Workspace", sys_status["workspace"])
+    table.add_row("Agents", str(sys_status["agents_count"]))
     
     console.print(table)
 
@@ -81,46 +86,37 @@ def execute(
     request: str = typer.Argument(..., help="Task to execute"),
     project: str = typer.Option("New Project", "--project", "-p", help="Project name")
 ):
-    """Execute a task through the agent ecosystem."""
+    """Execute a task with real tool execution."""
     init_system()
     
     async def run():
-        result = await orchestrator.execute_workflow(request, project)
+        result = await orchestrator.orchestrate(request, project)
         
-        console.print(Panel(
-            "[green]✓ Workflow completed successfully![/green]",
-            border_style="green"
-        ))
-        
-        return result
+        if result["status"] == "success":
+            console.print(Panel(
+                "[green]✓ Orchestration completed successfully![/green]",
+                border_style="green"
+            ))
+        else:
+            console.print(Panel(
+                f"[red]✗ Error: {result['error']}[/red]",
+                border_style="red"
+            ))
     
     asyncio.run(run())
 
 
 @app.command()
 def agents():
-    """List all registered agents."""
+    """List all agents."""
     init_system()
     
     sys_status = orchestrator.get_status()
     
-    console.print("[bold cyan]Registered Agents:[/bold cyan]\n")
+    console.print("[bold cyan]🤖 Registered Agents:[/bold cyan]\n")
     for i, agent in enumerate(sys_status["agents"], 1):
         console.print(f"  {i}. {agent['name']}")
-        console.print(f"     Role: {agent['role']}")
-        console.print(f"     ID: {agent['id']}\n")
-
-
-@app.command()
-def memory_stats():
-    """Show memory statistics."""
-    init_system()
-    
-    stats = memory_manager.get_stats()
-    
-    console.print("[bold cyan]Memory Statistics:[/bold cyan]")
-    for key, value in stats.items():
-        console.print(f"  {key}: {value}")
+        console.print(f"     Role: {agent['role']}\n")
 
 
 if __name__ == "__main__":

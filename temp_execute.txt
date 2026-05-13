@@ -1,0 +1,3 @@
+﻿async def execute(self, task: str) -> dict:
+    """Ejecuta tarea de QA."""
+    return await self.analyze_code(task)
