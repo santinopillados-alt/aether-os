@@ -1,5 +1,6 @@
-﻿from aether_os.core import AetherOrchestrator
-from aether_os.agents import CEOAgent, CTOAgent, ProductManagerAgent, FrontendEngineerAgent, BackendEngineerAgent
+﻿"""AETHER OS - AI Development Operating System."""
 
-__version__ = "0.1.0"
-__all__ = ['AetherOrchestrator', 'CEOAgent', 'CTOAgent', 'ProductManagerAgent', 'FrontendEngineerAgent', 'BackendEngineerAgent']
+__version__ = "2.0.0"
+__author__ = "santinopillados-alt"
+
+# No importar agentes aquí para evitar circular imports
