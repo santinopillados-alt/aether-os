@@ -1,7 +1,9 @@
-﻿"""AETHER - App principal para Railway."""
+﻿"""AETHER - App con HTML servido."""
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 app = FastAPI(title="AETHER", version="1.0.0")
 
@@ -15,9 +17,136 @@ app.add_middleware(
 
 users_db = {}
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
-    return {"name":"AETHER","status":"running","version":"1.0.0"}
+    return '''<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER - Genera Apps con IA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 60px; 
+            padding-bottom: 20px; 
+            border-bottom: 2px solid #00D4FF;
+        }
+        .logo { 
+            font-size: 2.5em; 
+            color: #00D4FF; 
+            font-weight: bold;
+        }
+        .hero { text-align: center; margin-bottom: 60px; }
+        .hero h1 { font-size: 3.5em; color: #00D4FF; margin-bottom: 20px; }
+        .cta-btn {
+            background: linear-gradient(135deg, #00D4FF, #0099cc);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .cta-btn:hover { transform: scale(1.05); }
+        .form-section {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid #00D4FF;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: 60px auto;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #00D4FF; font-weight: bold; }
+        .form-group input { width: 100%; padding: 12px; background: #1a1f3a; border: 1px solid #00D4FF; color: #e0e0e0; border-radius: 5px; }
+        .status { padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; }
+        .status.success { background: rgba(0, 255, 136, 0.2); color: #00ff88; border: 1px solid #00ff88; }
+        .status.error { background: rgba(255, 0, 0, 0.2); color: #ff6b6b; border: 1px solid #ff6b6b; }
+        .dashboard { display: none; }
+        .dashboard.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <div class="logo">⚡ AETHER</div>
+        </div>
+
+        <div id="home">
+            <div class="hero">
+                <h1>⚡ AETHER</h1>
+                <p>Genera apps full-stack con IA en segundos</p>
+            </div>
+
+            <div class="form-section">
+                <h2 style="color: #00D4FF; margin-bottom: 20px;">Registrarse (Gratis)</h2>
+                <div class="form-group">
+                    <label>Tu email</label>
+                    <input type="email" id="email-input" placeholder="tu@email.com">
+                </div>
+                <button class="cta-btn" onclick="handleSignup()" style="width: 100%;">Crear Cuenta</button>
+                <div id="signup-message"></div>
+            </div>
+        </div>
+
+        <div id="dashboard" class="dashboard">
+            <h2 style="color: #00D4FF; margin-bottom: 30px;">Dashboard</h2>
+            <p>Email: <span id="user-email-display" style="color: #00ff88;"></span></p>
+            <p>Apps: <span id="apps-display">0</span>/1</p>
+        </div>
+    </div>
+
+    <script>
+        const API = "https://aether-os-production-43fb.up.railway.app";
+        
+        async function handleSignup() {
+            const email = document.getElementById("email-input").value.trim();
+            const messageDiv = document.getElementById("signup-message");
+            
+            if (!email) {
+                messageDiv.innerHTML = '<div class="status error">❌ Por favor ingresa tu email</div>';
+                return;
+            }
+
+            messageDiv.innerHTML = '<div class="status" style="background: rgba(0, 212, 255, 0.2); color: #00D4FF;">⏳ Registrando...</div>';
+
+            try {
+                const response = await fetch(API + "/auth/signup?email=" + encodeURIComponent(email), {
+                    method: "POST"
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    messageDiv.innerHTML = '<div class="status success">✅ ¡Éxito!</div>';
+                    document.getElementById("user-email-display").textContent = data.user.email;
+                    document.getElementById("apps-display").textContent = data.user.apps_used;
+                    
+                    setTimeout(() => {
+                        document.getElementById("home").style.display = "none";
+                        document.getElementById("dashboard").classList.add("active");
+                    }, 1500);
+                } else {
+                    messageDiv.innerHTML = '<div class="status error">❌ Error: ' + (data.detail || "Error") + '</div>';
+                }
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="status error">❌ Error: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>'''
 
 @app.get("/pricing")
 async def pricing():
